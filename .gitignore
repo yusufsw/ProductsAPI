@@ -1,0 +1,43 @@
+# Build çıktıları
+bin/
+obj/
+
+# Kullanıcı ayarları
+*.user
+*.userosscache
+*.suo
+*.userprefs
+*.csproj.user
+
+# Rider ve Visual Studio
+.vscode/
+.idea/
+*.sln.iml
+
+# Yayın klasörü
+publish/
+dist/
+out/
+
+# Loglar
+*.log
+
+# Geçici dosyalar
+*.tmp
+*.temp
+*.bak
+
+# macOS / Linux
+.DS_Store
+Thumbs.db
+
+# NuGet paketleri
+*.nupkg
+packages/
+
+# Gizli anahtarlar ve yapılandırmalar
+appsettings.Development.json
+secrets.json
+
+# Dotnet Tools
+.dotnet/
