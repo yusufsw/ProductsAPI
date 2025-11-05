@@ -23,7 +23,7 @@ namespace ProductsAPI.Controllers
             var products = await _context.Products.ToListAsync();
             return Ok(products);
         }
-        
+
         //localhost:5000/api/products/1 => GET
         [HttpGet("{id}")] //{api/[controller]/{id}}
         public async Task<IActionResult> GetProduct(int? id)
@@ -40,6 +40,15 @@ namespace ProductsAPI.Controllers
             }
 
             return Ok(p); //200 code yani basarili
+        }
+        
+        [HttpPost]
+        public async Task<IActionResult> CreateProduct(Product entity)
+        {
+            _context.Products.Add(entity);
+            await _context.SaveChangesAsync();
+
+            return CreatedAtAction(nameof(GetProduct), new{id = entity.ProductId}, entity); //StatusCode(201) = CreatedAction
         }
     }
 }
