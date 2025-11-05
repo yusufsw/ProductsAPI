@@ -41,14 +41,45 @@ namespace ProductsAPI.Controllers
 
             return Ok(p); //200 code yani basarili
         }
-        
+
         [HttpPost]
         public async Task<IActionResult> CreateProduct(Product entity)
         {
             _context.Products.Add(entity);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction(nameof(GetProduct), new{id = entity.ProductId}, entity); //StatusCode(201) = CreatedAction
+            return CreatedAtAction(nameof(GetProduct), new { id = entity.ProductId }, entity); //StatusCode(201) = CreatedAction
+        }
+
+        //localhost:5000/api/products/1 => PUT
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateProduct(int id, Product entity)
+        {
+            if (id != entity.ProductId)
+            {
+                return BadRequest();//400'lu bir hata yani sen servisi yanlis kullandin. serviste hata yok demektir
+            }
+
+            var product = await _context.Products.FirstOrDefaultAsync(i => i.ProductId == id);
+
+            if (product == null)
+            {
+                return NotFound();
+            }
+            product.ProductName = entity.ProductName;
+            product.Price = entity.Price;
+            product.IsActive = entity.IsActive;
+
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception)
+            {
+                return NotFound(); //hatayi loglamak lazim aslinda
+            }
+
+            return NoContent(); //204 surum kodu. her seyin normal oldugunu soyler. geriye bir deger dondurmez 
         }
     }
 }
