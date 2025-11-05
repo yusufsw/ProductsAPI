@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using ProductsAPI.DTO;
 using ProductsAPI.Models;
 
 namespace ProductsAPI.Controllers
@@ -20,7 +21,7 @@ namespace ProductsAPI.Controllers
         [HttpGet]
         public async Task<IActionResult> GetProducts()
         {
-            var products = await _context.Products.ToListAsync();
+            var products = await _context.Products.Where(i => i.IsActive == true).Select(p => ProductToDTO(p)).ToListAsync(); 
             return Ok(products);
         }
 
@@ -32,7 +33,7 @@ namespace ProductsAPI.Controllers
             {
                 return NotFound(); //StatusCode(404, "Aradiginiz Kaynak Bulunamadi");
             }
-            var p = await _context.Products.FirstOrDefaultAsync(i => i.ProductId == id);
+            var p = await _context.Products.Select(p => ProductToDTO(p)).FirstOrDefaultAsync(i => i.ProductId == id);
 
             if (p == null)
             {
@@ -109,5 +110,16 @@ namespace ProductsAPI.Controllers
 
             return NoContent(); // basarili islem. geriye donus yapilmaz
         }
+    
+        private static ProductDTO ProductToDTO(Product p)
+        {
+            return new ProductDTO
+            {
+                ProductId = p.ProductId,
+                ProductName = p.ProductName,
+                Price = p.Price
+            };
+        }
     }
+    
 }
