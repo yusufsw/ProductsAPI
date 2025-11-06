@@ -9,10 +9,12 @@ namespace ProductsAPI.Controllers
     [Route("api/[controller]")]
     public class UsersController : ControllerBase
     {
-        private UserManager<AppUser> _userManager;
-        public UsersController(UserManager<AppUser> userManager)
+        private readonly UserManager<AppUser> _userManager;
+        private readonly SignInManager<AppUser> _signInManager;
+        public UsersController(UserManager<AppUser> userManager, SignInManager<AppUser> signInManager)
         {
             _userManager = userManager;
+            _signInManager = signInManager;
         }
         
         [HttpPost("register")]// api/users/register post metodu
