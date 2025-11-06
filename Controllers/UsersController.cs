@@ -16,9 +16,9 @@ namespace ProductsAPI.Controllers
             _userManager = userManager;
             _signInManager = signInManager;
         }
-        
+
         [HttpPost("register")]// api/users/register post metodu
-        public async Task<IActionResult> CreateUser(UserDTO  model)
+        public async Task<IActionResult> CreateUser(UserDTO model)
         {
             if (!ModelState.IsValid)
             {
@@ -39,8 +39,30 @@ namespace ProductsAPI.Controllers
                 return StatusCode(201); //Basarili create code -- CreatedAtAction() olabilir yerine
             }
 
-            return BadRequest(result.Errors); 
-            
+            return BadRequest(result.Errors);
+        }
+        
+        [HttpPost]
+        public async Task<IActionResult> Login(LoginDTO model)
+        {
+            var user = await _userManager.FindByEmailAsync(model.Email);
+
+            if (user == null)
+            {
+                return BadRequest(new { message = "bu email adina bir kayit yok" });
+            }
+
+            var result = await _signInManager.CheckPasswordSignInAsync(user, model.Password, false);//user.Password hashlenmis hali oldugundan modelden gelen yani kullanicidan gelen yazili text kullanilir
+
+            if (result.Succeeded)
+            {
+                return Ok(
+                    new { token = "token" }
+                );//JWT eklenecek
+            }
+
+            //succeded degilse 
+            return Unauthorized(); // yetki olmamasi
         }
     }
 }
