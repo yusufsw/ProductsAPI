@@ -33,7 +33,7 @@ namespace ProductsAPI.Controllers
             {
                 return NotFound(); //StatusCode(404, "Aradiginiz Kaynak Bulunamadi");
             }
-            var p = await _context.Products.Select(p => ProductToDTO(p)).FirstOrDefaultAsync(i => i.ProductId == id);
+            var p = await _context.Products.Where(i => i.ProductId == id).Select(p => ProductToDTO(p)).FirstOrDefaultAsync();
 
             if (p == null)
             {
@@ -113,12 +113,16 @@ namespace ProductsAPI.Controllers
     
         private static ProductDTO ProductToDTO(Product p)
         {
-            return new ProductDTO
+            var entity = new ProductDTO();
+            if(p != null)
             {
-                ProductId = p.ProductId,
-                ProductName = p.ProductName,
-                Price = p.Price
-            };
+                entity.ProductId = p.ProductId;
+                entity.ProductName = p.ProductName;
+                entity.Price = p.Price;
+            }
+
+
+            return entity;
         }
     }
     
